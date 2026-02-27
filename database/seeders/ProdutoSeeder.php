@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Produto;
+use Illuminate\Database\Seeder;
 
 class ProdutoSeeder extends Seeder
 {
@@ -54,12 +54,17 @@ class ProdutoSeeder extends Seeder
 
         foreach ($categorias as $categoria => $produtos) {
             foreach ($produtos as $produto) {
-                Produto::create([
+                $novoProduto = Produto::create([
                     'nome' => $produto,
                     'descricao' => 'Medicamento da categoria ' . $categoria,
-                    'preco' => fake()->randomFloat(2, 5, 200),
-                    'quantidade_estoque' => fake()->numberBetween(10, 500),
                     'categoria' => $categoria,
+                ]);
+
+                $novoProduto->lotes()->create([
+                    'lote' => strtoupper(fake()->bothify('LT-####??')),
+                    'validade' => fake()->dateTimeBetween('+3 months', '+24 months')->format('Y-m-d'),
+                    'preco_custo' => fake()->randomFloat(2, 5, 200),
+                    'quantidade' => fake()->numberBetween(10, 500),
                 ]);
             }
         }

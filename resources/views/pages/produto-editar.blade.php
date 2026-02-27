@@ -32,18 +32,32 @@
                 @endif
             </div>
 
-            <div class="grid gap-4 md:grid-cols-2">
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <div>
-                    <label for="preco" class="mb-1 block text-sm font-medium">Preco (R$)</label>
-                    <input id="preco" name="preco" type="number" step="0.01" value="{{ old('preco', $produto->preco) }}" class="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2" />
-                    @error('preco')
+                    <label for="lote" class="mb-1 block text-sm font-medium">Lote</label>
+                    <input id="lote" name="lote" value="{{ old('lote', $produto->lote_atual) }}" class="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2" />
+                    @error('lote')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
-                    <label for="quantidade_estoque" class="mb-1 block text-sm font-medium">Estoque</label>
-                    <input id="quantidade_estoque" name="quantidade_estoque" type="number" value="{{ old('quantidade_estoque', $produto->quantidade_estoque) }}" class="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2" />
-                    @error('quantidade_estoque')
+                    <label for="validade" class="mb-1 block text-sm font-medium">Validade</label>
+                    <input id="validade" name="validade" type="date" value="{{ old('validade', $produto->validade_atual) }}" class="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2" />
+                    @error('validade')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div>
+                    <label for="preco_custo" class="mb-1 block text-sm font-medium">Preco de custo (R$)</label>
+                    <input id="preco_custo" name="preco_custo" type="number" step="0.01" value="{{ old('preco_custo', $produto->preco_custo_atual) }}" class="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2" />
+                    @error('preco_custo')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div>
+                    <label for="quantidade" class="mb-1 block text-sm font-medium">Quantidade</label>
+                    <input id="quantidade" name="quantidade" type="number" value="{{ old('quantidade', $produto->estoque_atual) }}" class="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2" />
+                    @error('quantidade')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>

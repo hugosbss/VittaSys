@@ -39,8 +39,8 @@
                 <select name="sort_by" class="w-full rounded-lg border border-slate-300 px-3 py-2">
                     <option value="created_at" @selected($filters['sort_by'] === 'created_at')>Mais recentes</option>
                     <option value="nome" @selected($filters['sort_by'] === 'nome')>Nome</option>
-                    <option value="preco" @selected($filters['sort_by'] === 'preco')>Preco</option>
-                    <option value="quantidade_estoque" @selected($filters['sort_by'] === 'quantidade_estoque')>Estoque</option>
+                    <option value="preco_custo" @selected($filters['sort_by'] === 'preco_custo')>Preco de custo</option>
+                    <option value="quantidade" @selected($filters['sort_by'] === 'quantidade')>Estoque atual</option>
                 </select>
             </div>
             <div>
@@ -73,7 +73,7 @@
                 <button type="submit" class="rounded bg-red-700 px-3 py-2 text-sm font-semibold text-white">Excluir selecionados</button>
             </div>
 
-            <table class="w-full min-w-[880px] border-collapse text-sm">
+            <table class="w-full min-w-[980px] border-collapse text-sm">
             <thead class="bg-slate-50 text-left text-slate-600">
                 <tr>
                     <th class="border-b border-slate-200 p-3">
@@ -85,7 +85,9 @@
                     @if ($hasSku)
                         <th class="border-b border-slate-200 p-3">SKU</th>
                     @endif
-                    <th class="border-b border-slate-200 p-3">Preco</th>
+                    <th class="border-b border-slate-200 p-3">Lote</th>
+                    <th class="border-b border-slate-200 p-3">Validade</th>
+                    <th class="border-b border-slate-200 p-3">Preco custo</th>
                     <th class="border-b border-slate-200 p-3">Estoque</th>
                     <th class="border-b border-slate-200 p-3">Categoria</th>
                     <th class="border-b border-slate-200 p-3">Acoes</th>
@@ -105,8 +107,10 @@
                         @if ($hasSku)
                             <td class="border-b border-slate-100 p-3">{{ $produto->sku ?: '-' }}</td>
                         @endif
-                        <td class="border-b border-slate-100 p-3">R$ {{ number_format((float) $produto->preco, 2, ',', '.') }}</td>
-                        <td class="border-b border-slate-100 p-3">{{ $produto->quantidade_estoque }}</td>
+                        <td class="border-b border-slate-100 p-3">{{ $produto->lote_atual ?: '-' }}</td>
+                        <td class="border-b border-slate-100 p-3">{{ $produto->validade_atual_formatada ?: '-' }}</td>
+                        <td class="border-b border-slate-100 p-3">R$ {{ number_format((float) $produto->preco_custo_atual, 2, ',', '.') }}</td>
+                        <td class="border-b border-slate-100 p-3">{{ $produto->estoque_atual }}</td>
                         <td class="border-b border-slate-100 p-3">{{ $produto->categoria ?: 'Sem categoria' }}</td>
                         <td class="border-b border-slate-100 p-3">
                             <div class="flex flex-wrap gap-2">
@@ -117,7 +121,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="{{ $hasSku ? 9 : 8 }}" class="p-4 text-center text-slate-500">Nenhum produto encontrado.</td>
+                        <td colspan="{{ $hasSku ? 11 : 10 }}" class="p-4 text-center text-slate-500">Nenhum produto encontrado.</td>
                     </tr>
                 @endforelse
             </tbody>

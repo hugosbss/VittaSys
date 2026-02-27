@@ -31,10 +31,50 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 </head>
+@php
+    $isHome = request()->routeIs('home');
+    $isProdutos = request()->is('produtos') || request()->is('produtos/*');
+    $navbarMode = $isHome ? 'home' : ($isProdutos ? 'produtos' : 'default');
+@endphp
 <body class="min-h-screen bg-[radial-gradient(1200px_600px_at_10%_0%,#fff6e6_0%,#f6f4ef_55%)] text-ink font-sans">
-    @include('components.navbar')
-    <main>
+    @php
+        $hideNavbar = $hideNavbar ?? false;
+    @endphp
+
+    @unless ($hideNavbar)
+        @include('components.navbar', ['mode' => $navbarMode])
+    @endunless
+
+    <main class="{{ !$hideNavbar && $navbarMode !== 'default' ? 'pt-24' : '' }}">
         @yield('content')
     </main>
+
+    @if (!$hideNavbar && $navbarMode === 'produtos')
+        <script>
+            (() => {
+                const navbar = document.getElementById('mainNavbar');
+                if (!navbar) return;
+
+                let lastScrollY = window.scrollY;
+
+                const onScroll = () => {
+                    const currentY = window.scrollY;
+                    const nearTop = currentY <= 20;
+                    const scrollingUp = currentY < lastScrollY;
+
+                    if (nearTop || scrollingUp) {
+                        navbar.classList.remove('-translate-y-full');
+                    } else {
+                        navbar.classList.add('-translate-y-full');
+                    }
+
+                    lastScrollY = currentY;
+                };
+
+                window.addEventListener('scroll', onScroll, { passive: true });
+                onScroll();
+            })();
+        </script>
+    @endif
 </body>
 </html>

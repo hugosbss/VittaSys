@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LoteProduto;
 use App\Models\Produto;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class WebProdutoController extends Controller
         $perPage = (int) $request->query('per_page', 10);
         $perPage = max(5, min($perPage, 50));
 
-        $query = Produto::query();
+        $query = Produto::query()->with('loteAtual');
 
         if ($request->filled('search')) {
             $query->where('nome', 'like', '%' . $request->string('search') . '%');
@@ -27,21 +28,54 @@ class WebProdutoController extends Controller
         }
 
         if ($request->filled('min_preco')) {
-            $query->where('preco', '>=', (float) $request->query('min_preco'));
+            $minPreco = (float) $request->query('min_preco');
+            $query->whereHas('lotes', function ($loteQuery) use ($minPreco) {
+                $loteQuery->where('preco_custo', '>=', $minPreco);
+            });
         }
 
         if ($request->filled('max_preco')) {
-            $query->where('preco', '<=', (float) $request->query('max_preco'));
+            $maxPreco = (float) $request->query('max_preco');
+            $query->whereHas('lotes', function ($loteQuery) use ($maxPreco) {
+                $loteQuery->where('preco_custo', '<=', $maxPreco);
+            });
         }
 
-        $allowedSort = ['nome', 'preco', 'quantidade_estoque', 'created_at'];
-        $sortBy = $request->query('sort_by', 'created_at');
-        if (!in_array($sortBy, $allowedSort, true)) {
-            $sortBy = 'created_at';
+        $allowedSort = ['nome', 'preco_custo', 'quantidade', 'created_at', 'preco', 'quantidade_estoque'];
+        $sortByInput = (string) $request->query('sort_by', 'created_at');
+        if (!in_array($sortByInput, $allowedSort, true)) {
+            $sortByInput = 'created_at';
         }
 
-        $sortDir = strtolower($request->query('sort_dir', 'desc')) === 'asc' ? 'asc' : 'desc';
-        $query->orderBy($sortBy, $sortDir);
+        $sortBy = match ($sortByInput) {
+            'preco' => 'preco_custo',
+            'quantidade_estoque' => 'quantidade',
+            default => $sortByInput,
+        };
+
+        $sortDir = strtolower((string) $request->query('sort_dir', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        if ($sortBy === 'preco_custo') {
+            $query->orderBy(
+                LoteProduto::query()
+                    ->select('preco_custo')
+                    ->whereColumn('produto_id', 'produtos.id')
+                    ->latest('id')
+                    ->limit(1),
+                $sortDir
+            );
+        } elseif ($sortBy === 'quantidade') {
+            $query->orderBy(
+                LoteProduto::query()
+                    ->select('quantidade')
+                    ->whereColumn('produto_id', 'produtos.id')
+                    ->latest('id')
+                    ->limit(1),
+                $sortDir
+            );
+        } else {
+            $query->orderBy($sortBy, $sortDir);
+        }
 
         $produtos = $query->paginate($perPage)->withQueryString();
 
@@ -76,7 +110,7 @@ class WebProdutoController extends Controller
                 ->orderBy('categoria')
                 ->pluck('categoria'),
             'hasSku' => Schema::hasColumn('produtos', 'sku'),
-            'ultimosProdutos' => Produto::latest()->take(6)->get(),
+            'ultimosProdutos' => Produto::with('loteAtual')->latest()->take(6)->get(),
         ]);
     }
 
@@ -84,8 +118,10 @@ class WebProdutoController extends Controller
     {
         $validated = $request->validate([
             'nome' => ['required', 'string', 'max:255'],
-            'preco' => ['required', 'numeric', 'min:0'],
-            'quantidade_estoque' => ['required', 'integer', 'min:0'],
+            'lote' => ['required', 'string', 'max:255'],
+            'validade' => ['required', 'date'],
+            'preco_custo' => ['required', 'numeric', 'min:0'],
+            'quantidade' => ['required', 'integer', 'min:0'],
             'categoria' => ['nullable', 'string', 'max:255'],
             'categoria_nova' => ['nullable', 'string', 'max:255'],
             'descricao' => ['nullable', 'string'],
@@ -99,15 +135,28 @@ class WebProdutoController extends Controller
             $validated['sku'] = $request->string('sku')->toString();
         }
 
-        $validated['categoria'] = $this->resolveCategoria($request, $validated['categoria'] ?? null);
-        unset($validated['categoria_nova']);
-        unset($validated['imagem']);
+        $productData = [
+            'nome' => $validated['nome'],
+            'categoria' => $this->resolveCategoria($request, $validated['categoria'] ?? null),
+            'descricao' => $validated['descricao'] ?? null,
+        ];
 
-        if ($request->hasFile('imagem')) {
-            $validated['imagem'] = $request->file('imagem')->store('produtos', 'public');
+        if ($this->hasSkuColumn()) {
+            $productData['sku'] = $validated['sku'] ?? null;
         }
 
-        Produto::create($validated);
+        if ($request->hasFile('imagem')) {
+            $productData['imagem'] = $request->file('imagem')->store('produtos', 'public');
+        }
+
+        $produto = Produto::create($productData);
+
+        $produto->lotes()->create([
+            'lote' => $validated['lote'],
+            'validade' => $validated['validade'],
+            'preco_custo' => $validated['preco_custo'],
+            'quantidade' => $validated['quantidade'],
+        ]);
 
         return redirect()
             ->route('web.produtos.cadastrar')
@@ -116,6 +165,8 @@ class WebProdutoController extends Controller
 
     public function show(Produto $produto): View
     {
+        $produto->load('loteAtual');
+
         return view('pages.produto-detalhe', [
             'produto' => $produto,
             'hasSku' => $this->hasSkuColumn(),
@@ -124,6 +175,8 @@ class WebProdutoController extends Controller
 
     public function edit(Produto $produto): View
     {
+        $produto->load('loteAtual');
+
         return view('pages.produto-editar', [
             'produto' => $produto,
             'categorias' => Produto::query()
@@ -140,8 +193,10 @@ class WebProdutoController extends Controller
     {
         $validated = $request->validate([
             'nome' => ['required', 'string', 'max:255'],
-            'preco' => ['required', 'numeric', 'min:0'],
-            'quantidade_estoque' => ['required', 'integer', 'min:0'],
+            'lote' => ['required', 'string', 'max:255'],
+            'validade' => ['required', 'date'],
+            'preco_custo' => ['required', 'numeric', 'min:0'],
+            'quantidade' => ['required', 'integer', 'min:0'],
             'categoria' => ['nullable', 'string', 'max:255'],
             'categoria_nova' => ['nullable', 'string', 'max:255'],
             'descricao' => ['nullable', 'string'],
@@ -155,18 +210,42 @@ class WebProdutoController extends Controller
             $validated['sku'] = $request->string('sku')->toString();
         }
 
-        $validated['categoria'] = $this->resolveCategoria($request, $validated['categoria'] ?? null);
-        unset($validated['categoria_nova']);
-        unset($validated['imagem']);
+        $productData = [
+            'nome' => $validated['nome'],
+            'categoria' => $this->resolveCategoria($request, $validated['categoria'] ?? null),
+            'descricao' => $validated['descricao'] ?? null,
+        ];
+
+        if ($this->hasSkuColumn()) {
+            $productData['sku'] = $validated['sku'] ?? null;
+        }
 
         if ($request->hasFile('imagem')) {
             if (!empty($produto->imagem)) {
                 Storage::disk('public')->delete($produto->imagem);
             }
-            $validated['imagem'] = $request->file('imagem')->store('produtos', 'public');
+            $productData['imagem'] = $request->file('imagem')->store('produtos', 'public');
         }
 
-        $produto->update($validated);
+        $produto->update($productData);
+
+        $loteAtual = $produto->lotes()->latest('id')->first();
+
+        if ($loteAtual) {
+            $loteAtual->update([
+                'lote' => $validated['lote'],
+                'validade' => $validated['validade'],
+                'preco_custo' => $validated['preco_custo'],
+                'quantidade' => $validated['quantidade'],
+            ]);
+        } else {
+            $produto->lotes()->create([
+                'lote' => $validated['lote'],
+                'validade' => $validated['validade'],
+                'preco_custo' => $validated['preco_custo'],
+                'quantidade' => $validated['quantidade'],
+            ]);
+        }
 
         return redirect()
             ->route('web.produtos.index')

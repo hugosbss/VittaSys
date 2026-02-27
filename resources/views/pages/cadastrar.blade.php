@@ -36,18 +36,32 @@
                 @endif
             </div>
 
-            <div class="grid gap-4 md:grid-cols-2">
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <div>
-                    <label for="preco" class="mb-1 block text-sm font-medium">Preco (R$)</label>
-                    <input id="preco" name="preco" type="number" step="0.01" value="{{ old('preco') }}" class="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2" />
-                    @error('preco')
+                    <label for="lote" class="mb-1 block text-sm font-medium">Lote</label>
+                    <input id="lote" name="lote" value="{{ old('lote') }}" class="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2" />
+                    @error('lote')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
                 <div>
-                    <label for="quantidade_estoque" class="mb-1 block text-sm font-medium">Estoque</label>
-                    <input id="quantidade_estoque" name="quantidade_estoque" type="number" value="{{ old('quantidade_estoque', 0) }}" class="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2" />
-                    @error('quantidade_estoque')
+                    <label for="validade" class="mb-1 block text-sm font-medium">Validade</label>
+                    <input id="validade" name="validade" type="date" value="{{ old('validade') }}" class="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2" />
+                    @error('validade')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div>
+                    <label for="preco_custo" class="mb-1 block text-sm font-medium">Preco de custo (R$)</label>
+                    <input id="preco_custo" name="preco_custo" type="number" step="0.01" value="{{ old('preco_custo') }}" class="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2" />
+                    @error('preco_custo')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div>
+                    <label for="quantidade" class="mb-1 block text-sm font-medium">Quantidade</label>
+                    <input id="quantidade" name="quantidade" type="number" value="{{ old('quantidade', 0) }}" class="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2" />
+                    @error('quantidade')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
@@ -110,13 +124,13 @@
                 <a href="{{ route('web.produtos.show', $produto) }}" class="block rounded-lg bg-white p-4 shadow transition hover:-translate-y-0.5 hover:shadow-lg">
                     <div class="mb-2 flex items-center justify-between gap-2">
                         <h4 class="font-semibold">{{ $produto->nome }}</h4>
-                        <span class="font-bold text-green-700">R$ {{ number_format((float) $produto->preco, 2, ',', '.') }}</span>
+                        <span class="font-bold text-green-700">R$ {{ number_format((float) $produto->preco_custo_atual, 2, ',', '.') }}</span>
                     </div>
                     <img src="{{ $produto->imagem_url }}" alt="Imagem de {{ $produto->nome }}" class="mb-2 h-28 w-full rounded-md object-cover" />
                     <p class="mb-2 text-sm text-slate-600">{{ $produto->descricao ?: 'Sem descricao.' }}</p>
                     <div class="flex items-center justify-between text-xs text-slate-500">
                         <span>{{ $produto->categoria ?: 'Sem categoria' }}</span>
-                        <span>Estoque: {{ $produto->quantidade_estoque }}</span>
+                        <span>Estoque: {{ $produto->estoque_atual }}</span>
                     </div>
                 </a>
             @empty

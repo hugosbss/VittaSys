@@ -32,12 +32,20 @@
                 <dd class="mt-1 text-base font-medium text-slate-900">{{ $produto->categoria ?: 'Sem categoria' }}</dd>
             </div>
             <div>
-                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Preco</dt>
-                <dd class="mt-1 text-base font-medium text-slate-900">R$ {{ number_format((float) $produto->preco, 2, ',', '.') }}</dd>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Lote</dt>
+                <dd class="mt-1 text-base font-medium text-slate-900">{{ $produto->lote_atual ?: '-' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Validade</dt>
+                <dd class="mt-1 text-base font-medium text-slate-900">{{ $produto->validade_atual_formatada ?: '-' }}</dd>
+            </div>
+            <div>
+                <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Preco de custo</dt>
+                <dd class="mt-1 text-base font-medium text-slate-900">R$ {{ number_format((float) $produto->preco_custo_atual, 2, ',', '.') }}</dd>
             </div>
             <div>
                 <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Estoque</dt>
-                <dd class="mt-1 text-base font-medium text-slate-900">{{ $produto->quantidade_estoque }}</dd>
+                <dd class="mt-1 text-base font-medium text-slate-900">{{ $produto->estoque_atual }}</dd>
             </div>
             <div class="sm:col-span-2">
                 <dt class="text-xs font-semibold uppercase tracking-wide text-slate-500">Descricao</dt>

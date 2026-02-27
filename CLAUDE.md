@@ -1,15 +1,15 @@
 # VittaSys  
-## Sistema Web de Gestão Inteligente para Farmácias
+## Sistema Web de Gestão Inteligente
 
-O **VittaSys** é um sistema web focado no **gerenciamento de estoque, vendas, compras, relatórios e análises**, direcionado especificamente ao **nicho farmacêutico**, unindo **modernidade, simplicidade e inteligência de dados**.
+O **VittaSys** é um sistema web focado no **gerenciamento de estoque, vendas, compras, relatórios e análises**, unindo **modernidade, simplicidade e inteligência de dados**.
 
-Este documento descreve **funcionalidades estratégicas**, **módulos essenciais** e **ideias de evolução**, baseadas nas **principais dores das farmácias** e nos **melhores sistemas do mercado farmacêutico**.
+Este documento descreve **funcionalidades estratégicas**, **módulos essenciais** e **ideias de evolução**, baseadas nas **principais dores** e nos **melhores sistemas do mercado**.
 
 ---
 
 ## 🎯 Objetivo do Projeto
 
-Criar um **ERP farmacêutico moderno**, simples de usar, com foco em:
+Criar um **ERP moderno**, simples de usar, com foco em:
 
 - Redução de perdas por vencimento
 - Controle inteligente de estoque
@@ -22,7 +22,7 @@ Tudo isso em **um único sistema web**.
 
 ---
 
-## 🧠 Principais Dores das Farmácias
+## 🧠 Principais Dores
 
 - Falta de visibilidade do estoque real
 - Produtos vencendo sem alertas
@@ -146,7 +146,7 @@ Transformar dados em **decisão**, não apenas em números.
 - Gateway de pagamento
 - Fornecedores (catálogo e preços)
 - Sistema fiscal / contábil
-- API para e-commerce da farmácia
+- API para e-commerce do nicho
 - Integração com site institucional da loja
 
 ---
@@ -198,17 +198,39 @@ Transformar dados em **decisão**, não apenas em números.
 
 ---
 
-## 🏁 Conclusão
-
-O **VittaSys** tem potencial para evoluir de um sistema de estoque para um **ERP farmacêutico moderno**, focado em:
-
-- Simplicidade
-- Inteligência
-- Decisão orientada por dados
-- Experiência do usuário
-
-Mais do que cadastrar produtos, o objetivo é **ajudar farmácias a vender melhor, perder menos e decidir com base em dados reais**.
+## 🏁 **VittaSys**
 
 ---
 
-*VittaSys - gestão inteligente para quem vive o balcão da farmácia.*
+*VittaSys - gestão inteligente para quem vive o balcão.*
+
+📌 Filament, relatórios e dashboards:
+
+📊 Relatórios de vendas
+
+📈 Gráficos de KPI
+
+🧾 Listagem de movimentos
+
+📦 Gestão de estoque
+
+
+## Fase 1:
+
+📌 Só registrar venda
+
+📌 Subtrair estoque
+
+📌 Gerar relatório
+
+## Fase 2:
+
+📌 Integrar com API fiscal
+
+📌 Focus NFe
+
+📌 Tecnospeed
+
+📌 Nuvem Fiscal
+
+📌 Sefaz direto

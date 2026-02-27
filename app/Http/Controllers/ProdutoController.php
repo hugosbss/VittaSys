@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LoteProduto;
 use App\Models\Produto;
 use Illuminate\Http\Request;
 
@@ -12,59 +13,87 @@ class ProdutoController extends Controller
         $perPage = (int) $request->query('per_page', 10);
         $perPage = max(1, min($perPage, 100));
 
-        $query = Produto::query();
+        $query = Produto::query()->with('loteAtual');
 
         if ($request->filled('search')) {
-            $search = $request->query('search');
+            $search = (string) $request->query('search');
             $query->where('nome', 'like', "%{$search}%");
         }
 
         if ($request->filled('categoria')) {
-            $query->where('categoria', $request->query('categoria'));
+            $query->where('categoria', (string) $request->query('categoria'));
         }
 
         if ($request->filled('min_preco')) {
-            $query->where('preco', '>=', $request->query('min_preco'));
+            $minPreco = (float) $request->query('min_preco');
+            $query->whereHas('lotes', function ($loteQuery) use ($minPreco) {
+                $loteQuery->where('preco_custo', '>=', $minPreco);
+            });
         }
 
         if ($request->filled('max_preco')) {
-            $query->where('preco', '<=', $request->query('max_preco'));
+            $maxPreco = (float) $request->query('max_preco');
+            $query->whereHas('lotes', function ($loteQuery) use ($maxPreco) {
+                $loteQuery->where('preco_custo', '<=', $maxPreco);
+            });
         }
 
-        $allowedSort = ['nome', 'preco', 'created_at'];
-        $sortBy = $request->query('sort_by', 'created_at');
-        if (!in_array($sortBy, $allowedSort, true)) {
-            $sortBy = 'created_at';
+        $allowedSort = ['nome', 'preco_custo', 'created_at', 'preco'];
+        $sortByInput = (string) $request->query('sort_by', 'created_at');
+        if (!in_array($sortByInput, $allowedSort, true)) {
+            $sortByInput = 'created_at';
         }
 
-        $sortDir = strtolower($request->query('sort_dir', 'desc')) === 'asc' ? 'asc' : 'desc';
+        $sortBy = $sortByInput === 'preco' ? 'preco_custo' : $sortByInput;
+        $sortDir = strtolower((string) $request->query('sort_dir', 'desc')) === 'asc' ? 'asc' : 'desc';
 
-        if ($sortBy === 'preco') {
-            $produtos = $query->orderByRaw("CAST(preco AS DECIMAL(10,2)) {$sortDir}")->paginate($perPage);
+        if ($sortBy === 'preco_custo') {
+            $query->orderBy(
+                LoteProduto::query()
+                    ->select('preco_custo')
+                    ->whereColumn('produto_id', 'produtos.id')
+                    ->latest('id')
+                    ->limit(1),
+                $sortDir
+            );
         } else {
-            $produtos = $query->orderBy($sortBy, $sortDir)->paginate($perPage);
+            $query->orderBy($sortBy, $sortDir);
         }
 
-        return response()->json($produtos);
+        return response()->json($query->paginate($perPage));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'nome' => ['required', 'string', 'max:255'],
-            'preco' => ['required', 'numeric', 'min:0'],
             'descricao' => ['nullable', 'string'],
             'categoria' => ['nullable', 'string', 'max:255'],
-            'quantidade_estoque' => ['nullable', 'integer', 'min:0'],
+            'lote' => ['required', 'string', 'max:255'],
+            'validade' => ['required', 'date'],
+            'preco_custo' => ['required', 'numeric', 'min:0'],
+            'quantidade' => ['required', 'integer', 'min:0'],
         ]);
 
-        $produto = Produto::create($validated);
-        return response()->json($produto, 201);
+        $produto = Produto::create([
+            'nome' => $validated['nome'],
+            'descricao' => $validated['descricao'] ?? null,
+            'categoria' => $validated['categoria'] ?? null,
+        ]);
+
+        $produto->lotes()->create([
+            'lote' => $validated['lote'],
+            'validade' => $validated['validade'],
+            'preco_custo' => $validated['preco_custo'],
+            'quantidade' => $validated['quantidade'],
+        ]);
+
+        return response()->json($produto->load('loteAtual'), 201);
     }
 
     public function show($id)
     {
-        $produto = Produto::findOrFail($id);
+        $produto = Produto::with('loteAtual')->findOrFail($id);
         return response()->json($produto);
     }
 
@@ -72,15 +101,41 @@ class ProdutoController extends Controller
     {
         $validated = $request->validate([
             'nome' => ['required', 'string', 'max:255'],
-            'preco' => ['required', 'numeric', 'min:0'],
             'descricao' => ['nullable', 'string'],
             'categoria' => ['nullable', 'string', 'max:255'],
-            'quantidade_estoque' => ['nullable', 'integer', 'min:0'],
+            'lote' => ['required', 'string', 'max:255'],
+            'validade' => ['required', 'date'],
+            'preco_custo' => ['required', 'numeric', 'min:0'],
+            'quantidade' => ['required', 'integer', 'min:0'],
         ]);
 
         $produto = Produto::findOrFail($id);
-        $produto->update($validated);
-        return response()->json($produto);
+
+        $produto->update([
+            'nome' => $validated['nome'],
+            'descricao' => $validated['descricao'] ?? null,
+            'categoria' => $validated['categoria'] ?? null,
+        ]);
+
+        $loteAtual = $produto->lotes()->latest('id')->first();
+
+        if ($loteAtual) {
+            $loteAtual->update([
+                'lote' => $validated['lote'],
+                'validade' => $validated['validade'],
+                'preco_custo' => $validated['preco_custo'],
+                'quantidade' => $validated['quantidade'],
+            ]);
+        } else {
+            $produto->lotes()->create([
+                'lote' => $validated['lote'],
+                'validade' => $validated['validade'],
+                'preco_custo' => $validated['preco_custo'],
+                'quantidade' => $validated['quantidade'],
+            ]);
+        }
+
+        return response()->json($produto->load('loteAtual'));
     }
 
     public function destroy($id)

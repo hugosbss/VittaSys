@@ -1,4 +1,13 @@
-<nav class="sticky top-0 z-10 border-b border-slate-200/80 bg-white/80 backdrop-blur px-6 py-4">
+@props(['mode' => 'default'])
+
+@php
+    $isFixed = in_array($mode, ['home', 'produtos'], true);
+    $navClass = $isFixed
+        ? 'fixed top-0 left-0 right-0 z-50 transition-transform duration-300'
+        : 'relative z-10';
+@endphp
+
+<nav id="mainNavbar" data-navbar-mode="{{ $mode }}" class="{{ $navClass }} border-b border-slate-200/80 bg-white/80 backdrop-blur px-6 py-4">
     <div class="mx-auto grid max-w-7xl grid-cols-1 gap-4 lg:grid-cols-[auto_1fr_auto] lg:items-center">
         <a href="{{ route('home') }}" class="inline-flex flex-col leading-none">
             <span class="text-[1.1rem] font-extrabold text-ink">VittaSys</span>

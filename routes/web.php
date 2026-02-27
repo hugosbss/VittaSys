@@ -26,3 +26,5 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/logout', [WebAuthController::class, 'logout'])->name('logout');
 });
+
+Route::view('/caixa', 'pdv.caixa')->name('caixa');
