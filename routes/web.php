@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CaixaController;
 use App\Http\Controllers\WebAuthController;
 use App\Http\Controllers\WebProdutoController;
 use Illuminate\Support\Facades\Route;
@@ -24,7 +25,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/produtos/{produto}', [WebProdutoController::class, 'update'])->name('web.produtos.update');
     Route::delete('/produtos/{produto}', [WebProdutoController::class, 'destroy'])->name('web.produtos.destroy');
 
+    Route::view('/perfil', 'pages.perfil')->name('perfil');
     Route::post('/logout', [WebAuthController::class, 'logout'])->name('logout');
+    Route::get('/caixa', [CaixaController::class, 'index'])->name('caixa');
+    Route::post('/caixa/finalizar', [CaixaController::class, 'finalizarVenda'])->name('caixa.finalizar');
+    Route::get('/caixa/resumo', [CaixaController::class, 'resumo'])->name('caixa.resumo');
+    Route::get('/caixa/produtos/buscar', [CaixaController::class, 'buscarProdutos'])->name('caixa.buscar-produtos');
 });
-
-Route::view('/caixa', 'pdv.caixa')->name('caixa');
