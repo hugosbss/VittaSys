@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\CaixaController;
+use App\Http\Controllers\Admin\RelatorioVendasController;
+use App\Http\Controllers\Admin\RelatorioListagemController;
 use App\Http\Controllers\WebAuthController;
 use App\Http\Controllers\WebProdutoController;
 use Illuminate\Support\Facades\Route;
@@ -31,4 +33,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/caixa/finalizar', [CaixaController::class, 'finalizarVenda'])->name('caixa.finalizar');
     Route::get('/caixa/resumo', [CaixaController::class, 'resumo'])->name('caixa.resumo');
     Route::get('/caixa/produtos/buscar', [CaixaController::class, 'buscarProdutos'])->name('caixa.buscar-produtos');
+    Route::get('/admin/relatorios/vendas/imprimir', [RelatorioVendasController::class, 'imprimir'])->name('admin.relatorios.vendas.imprimir');
+    Route::get('/admin/relatorios/movimentos/imprimir', [RelatorioListagemController::class, 'imprimir'])->name('admin.relatorios.movimentos.imprimir');
 });

@@ -1,0 +1,10 @@
+<x-filament::dropdown.list>
+    <x-filament::dropdown.list.item
+        :href="route('home')"
+        icon="heroicon-o-home"
+        tag="a"
+        tooltip="/home"
+    >
+        Home
+    </x-filament::dropdown.list.item>
+</x-filament::dropdown.list>

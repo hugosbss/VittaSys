@@ -2,6 +2,16 @@
 
 @section('content')
 <div class="mx-auto max-w-[1500px] p-4 lg:p-6" x-data="pdvCaixa()" x-init="init()">
+    {{-- <div class="mb-3">
+        <a href="{{ route('home') }}" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M3 10.5 12 3l9 7.5"/>
+                <path d="M5 9.5V21h14V9.5"/>
+            </svg>
+            <span>Home</span>
+        </a>
+    </div> --}}
+
     <header class="mb-4 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-soft">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3">

@@ -30,11 +30,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #000 !important;
+                color: #e5e7eb;
+            }
+        }
+    </style>
 </head>
 @php
     $isHome = request()->routeIs('home');
     $isProdutos = request()->is('produtos') || request()->is('produtos/*');
     $navbarMode = $isHome ? 'home' : ($isProdutos ? 'produtos' : 'default');
+    $showHomeFloatingButton = !$isHome && !$isProdutos;
 @endphp
 <body class="min-h-screen bg-[radial-gradient(1200px_600px_at_10%_0%,#fff6e6_0%,#f6f4ef_55%)] text-ink font-sans">
     @php
@@ -48,6 +57,19 @@
     <main class="{{ !$hideNavbar && $navbarMode !== 'default' ? 'pt-24' : '' }}">
         @yield('content')
     </main>
+
+    @if ($showHomeFloatingButton)
+        <a
+            href="{{ route('home') }}"
+            title="Voltar para Home"
+            class="fixed bottom-5 right-5 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-ink shadow-soft transition hover:-translate-y-0.5 hover:bg-slate-50"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M3 10.5 12 3l9 7.5"/>
+                <path d="M5 9.5V21h14V9.5"/>
+            </svg>
+        </a>
+    @endif
 
     @if (!$hideNavbar && $navbarMode === 'produtos')
         <script>
