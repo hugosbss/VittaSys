@@ -1,127 +1,160 @@
-A estrutura do banco do projeto irá mudar, aplique para mim e crie/edite as migrations responsáveis, 
+# VittaSys
 
-Produto:
+Sistema web de gestão com **Laravel 12 + Filament 5**, com operação principal em:
+- Gestão de produtos em Blade
+- PDV/Caixa com integração ao banco
+- Dashboard administrativo em `/admin`
 
-| Campo       | Tipo    |   |
-| ----------- | ------- | - |
-| id          | bigint  |   |
-| product_id  | fk      |   |
-| lote        | string  |   |
-| validade    | date    |   |
-| preco_custo | decimal |   |
-| quantidade  | integer |   |
-| created_at  |         |   |
-| updated_at  |         |   |
+## Stack atual
+- PHP 8.2+
+- Laravel 12
+- Filament 5
+- Blade + Alpine.js
+- Tailwind CSS (Vite)
 
-Deixe o campo imagem em produto ainda.
+## Funcionalidades implementadas (hoje)
 
-Nova migration: vendas
+### 1. Autenticação web
+- Login, registro e logout via páginas Blade
+- Área de perfil (`/perfil`)
 
-| Campo           | Tipo                                 |
-| --------------- | ------------------------------------ |
-| id              | bigint                               |
-| user_id         | fk (quem vendeu)                     |
-| caixa_id        | fk                                   |
-| total_bruto     | decimal                              |
-| desconto        | decimal                              |
-| total_liquido   | decimal                              |
-| forma_pagamento | enum                                 |
-| status          | enum (aberta, finalizada, cancelada) |
-| created_at      |               
+### 2. Gestão de produtos (Blade)
+- CRUD completo em `/produtos`
+- Estrutura por lotes (lote, validade, preço de custo e quantidade)
+- Campo de imagem mantido em `produtos`
+- Visualização de lote atual por produto
 
-Nova migration: itens_vendidos
+### 3. PDV / Caixa (`/caixa`)
+- Abertura automática de caixa para usuário autenticado (quando não há caixa aberto)
+- Busca de produtos por nome, ID e SKU (quando coluna existir)
+- Finalização de venda com validações
+- Registro de itens vendidos e pagamentos
+- Resumo de caixa em tempo real
+- Interface preparada para métodos de pagamento (dinheiro, pix, crédito, débito, crediário)
 
-| Campo            | Tipo    |
-| ---------------- | ------- |
-| id               | bigint  |
-| sale_id          | fk      |
-| product_id       | fk      |
-| product_batch_id | fk      |
-| quantidade       | integer |
-| preco_unitario   | decimal |
-| subtotal         | decimal |
-| created_at       |         |
+### 4. Serviços de domínio
+- `PagamentoServico`
+- `InventarioService`
+- `ReportService`
+- `SaldoService`
+- `StripePaymentService`
 
+### 5. Filament Admin (`/admin`)
+- Relatórios e recursos administrativos com dados reais do banco
+- Recursos principais:
+  - `VendaResource`
+  - `MovimentoResource`
+- Widgets/KPIs:
+  - KPI Overview
+  - Vendas por período
+  - Vendas por dia
+  - Formas de pagamento
+  - Produtos mais vendidos
+- Link rápido para home no menu de perfil
+- Ajustes visuais integrados ao tema do projeto
 
-nova migration: caixa
+### 6. Impressão de relatórios
+- Relatório de vendas para impressão
+- Relatório de movimentos para impressão
+- Filtros por parâmetros de listagem
 
-| Campo            | Tipo                   |
-| ---------------- | ---------------------- |
-| id               | bigint                 |
-| user_id          | fk                     |
-| valor_abertura   | decimal                |
-| valor_fechamento | decimal                |
-| aberto_em        | datetime               |
-| fechado_em       | datetime               |
-| status           | enum (aberto, fechado) |
+## Estrutura de dados atual (resumo)
+- `produtos` (com `imagem`)
+- `lotes_produto` (lotes por produto)
+- `caixas`
+- `vendas`
+- `itens_vendidos`
+- `pagamentos`
 
-nova migration: pagamentos
-| Campo      | Tipo                                  |
-| ---------- | ------------------------------------- |
-| id         | bigint                                |
-| sale_id    | fk                                    |
-| metodo     | enum (dinheiro, pix, credito, debito) |
-| valor      | decimal                               |
-| created_at |                                       |
+## Rotas principais
+- `/` Home
+- `/produtos` Gestão de produtos
+- `/caixa` PDV
+- `/admin` Painel Filament
 
+## Setup inicial (clone limpo)
 
-Atualizações nos models:
-Produto
-public function batches()
-{
-    return $this->hasMany(ProductBatch::class);
-}
+1. Instalar dependências PHP
+```bash
+composer install
+```
 
-Lote_produto
-public function product()
-{
-    return $this->belongsTo(Product::class);
-}
+2. Criar `.env`
+```bash
+cp .env.example .env
+```
 
+3. Gerar chave
+```bash
+php artisan key:generate
+```
 
-venda
-public function items()
-{
-    return $this->hasMany(SaleItem::class);
-}
+4. Criar link de storage
+```bash
+php artisan storage:link
+```
 
-public function payments()
-{
-    return $this->hasMany(Payment::class);
-}
+5. Rodar migrations + seed
+```bash
+php artisan migrate --seed
+```
 
+6. Subir projeto
+```bash
+php artisan serve
+```
 
-Preciso que atualize também os campos das views que ja estão sendo utilizados esses campos no banco, será necessário mudar a chamada dos itens salvos no banco para essa nova arquitetura.
+## Usuário padrão de desenvolvimento
+Gerado no `DatabaseSeeder`:
+- E-mail: `admin@vittasys.com`
+- Senha: `123456`
 
+## Variáveis importantes no `.env`
+- `APP_NAME`, `APP_URL`, `APP_ENV`
+- Configuração de banco (`DB_*`)
+- Stripe:
+  - `STRIPE_KEY`
+  - `STRIPE_SECRET`
 
-Crie uma view blade.php em uma pasta chamada PDV e nela deve ser a estrutura resources/views/pdv/caixa.blade.php 
+## Solução de problemas comuns
 
-Crie o layout do caixa baseado nas cores das views que ja possui hoje e layout que temos, deve ser algo que não comprometa o layout moderno que ja possuimos, como deve ser reativo o caixa pensei em usar blade + alpine.js , mas não precisa criar controller/service por hora eu irei implementar após ver essa nova estrutura. Apenas faça o que solicitei e nada mais. A tela do caixa deve conter o que é necessário para hoje em dia, insira 
+### Erro: `Please provide a valid cache path.`
+Execute:
+```bash
+mkdir -p storage/framework/{cache,sessions,views} bootstrap/cache
+php artisan optimize:clear
+```
 
-Formas de Pagamento: Botões ou seleção para dinheiro (com cálculo de troco), cartão de crédito/débito, Pix, ou crediário próprio.
-Menu de Ações rápidas (Teclas de Atalho): Funções como F1 (Iniciar Venda), F3 (Consulta de Preço), F4 (Finalizar), F6 (Cancelar Item/Desconto), F8 (Cancelar Venda).
+### Warning: `PHP_CLI_SERVER_WORKERS`
+Para usar workers locais com `php artisan serve`, rode com `--no-reload`.
 
-Informações de status: Data, hora, status do caixa (aberto/fechado)
+## Roadmap de melhorias futuras
 
-Atualização em tempo real: produtos que estão sendo bipados no momento, soma dos produtos
+### Curto prazo
+- Fluxo completo de pagamento real (PIX/QR, cartão) integrado ao `StripePaymentService`
+- Validação antifraude e logs de tentativa de pagamento
+- Fechamento de caixa com conferência e justificativa de diferença
+- Melhorias de UX no PDV (atalhos reais, foco de leitura e operação por teclado)
 
-Área de Entrada de Dados: Campo para leitura de código de barras, busca pelo nome do produto ou digitação do código.
+### Médio prazo
+- Impressão térmica de comprovante/cupom
+- Exportação avançada (PDF/Excel) com filtros salvos
+- Permissões por perfil (caixa, gerente, admin)
+- Auditoria de ações críticas (vendas, cancelamentos, alterações de estoque)
 
-Lista de Produtos/Itens: Área central que exibe os produtos escaneados, com descrição, quantidade, valor unitário e total por item.
+### BI e relatórios
+- Ticket médio por período e por operador
+- Margem bruta por venda/produto
+- Curva ABC de produtos
+- Ruptura e giro de estoque por lote
+- Comparativo entre períodos (D-7, D-30, mês atual vs anterior)
 
-Permite aplicar descontos ou alterar quantidades.
+### Integrações futuras
+- Emissão fiscal (NFC-e/SAT/NF-e) via provedor
+- Integração com marketplaces/e-commerce
+- Webhooks para conciliação automática de pagamentos
+- Filament com relatórios executivos adicionais e agendamentos
 
-Emissão de documentos fiscais
-
-Cupom fiscal (NFC-e ou SAT, dependendo do estado).
-
-Nota fiscal eletrônica integrada.
-
-
-Controle de estoque
-
-***Ponto importante: Atualização automática da saída de produtos direto com banco de dados.
-
-Relatórios rápidos:
-Vendas por período, ticket médio, lucro bruto.
-Fechamento de caixa com saldo inicial e final.
+## Observações
+- A gestão de estoque operacional permanece no fluxo Blade de produtos.
+- O Filament está focado em **admin, BI e relatórios**, mantendo separação clara entre operação e gestão.

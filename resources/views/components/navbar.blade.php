@@ -23,8 +23,8 @@
         <div class="flex flex-wrap items-center gap-3">
             <a href="{{ route('home') }}" class="text-sm font-semibold text-ink">Home</a>
             @auth
-                <a href="{{ route('web.produtos.index') }}" class="text-sm font-semibold text-ink">Produtos</a>
-                <a href="{{ route('caixa') }}" class="text-sm font-semibold text-ink">Caixa</a>
+                {{-- <a href="{{ route('web.produtos.index') }}" class="text-sm font-semibold text-ink">Produtos</a>
+                <a href="{{ route('caixa') }}" class="text-sm font-semibold text-ink">Caixa</a> --}}
 
                 <details class="relative">
                     <summary class="list-none cursor-pointer rounded-full border border-slate-300 bg-white px-3 py-1.5">
