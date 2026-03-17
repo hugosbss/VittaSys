@@ -21,6 +21,8 @@ class MovimentoResource extends Resource
 
     protected static ?string $navigationLabel = 'Listagem de movimentos';
 
+    protected static ?string $pluralModelLabel = 'Itens vendidos';
+
     protected static string|\UnitEnum|null $navigationGroup = 'Relatórios & BI';
 
     protected static ?int $navigationSort = 2;

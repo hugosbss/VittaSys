@@ -25,5 +25,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@vittasys.com',
             'password' => Hash::make('123456'),
         ]);
+
+        $this->call([
+            VendasSeeder::class,
+        ]);
     }
 }

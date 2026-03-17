@@ -72,37 +72,44 @@ Sistema web de gestão com **Laravel 12 + Filament 5**, com operação principal
 - `/caixa` PDV
 - `/admin` Painel Filament
 
-## Setup inicial (clone limpo)
+## Fluxos e telas (prints)
 
-1. Instalar dependências PHP
-```bash
-composer install
-```
+### Home e acesso
+Tela inicial com opções de acesso para login e cadastro.
+![Home - opções de acesso](public/print/home-opcoes-de-acesso.png)
 
-2. Criar `.env`
-```bash
-cp .env.example .env
-```
+### Gestão de produtos (Blade)
+Visão geral da gestão de produtos, com listagem e ações principais.
+![Gestão de produtos](public/print/gestao-produtos.png)
 
-3. Gerar chave
-```bash
-php artisan key:generate
-```
+Tela de cadastro de produto.
+![Cadastro de produtos](public/print/cadastro-de-produtos.png)
 
-4. Criar link de storage
-```bash
-php artisan storage:link
-```
+Tela de edição de produto.
+![Edição de produto](public/print/editar-produto.png)
 
-5. Rodar migrations + seed
-```bash
-php artisan migrate --seed
-```
+Tela de detalhes do produto com informações e lote atual.
+![Detalhe do produto](public/print/detalhe-produto.png)
 
-6. Subir projeto
-```bash
-php artisan serve
-```
+### PDV / Caixa
+Tela do PDV com caixa aberto, busca de produtos e resumo do caixa.
+![PDV / Caixa](public/print/pdv-caixa.png)
+
+Tela de pagamento com PIX e QR Code.
+![PDV - Pix QR Code](public/print/pdv-pix-qr-code.png)
+
+Tela de pagamento com cartão de crédito/débito.
+![PDV - Cartão crédito/débito](public/print/pdv-cartao-credito-debito.png)
+
+### Filament Admin
+Dashboard administrativo do Filament.
+![Admin - Dashboard Filament](public/print/admin-filament-Dashboard.png)
+
+Relatório de vendas no Filament.
+![Relatórios de vendas](public/print/Relatorios-de-vendas-filament.png)
+
+Listagem de itens vendidos (movimentos).
+![Itens vendidos](public/print/filament-Itens-vendidos.png)
 
 ## Usuário padrão de desenvolvimento
 Gerado no `DatabaseSeeder`:

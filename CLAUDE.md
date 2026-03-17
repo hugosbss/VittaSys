@@ -234,3 +234,10 @@ Transformar dados em **decisão**, não apenas em números.
 📌 Nuvem Fiscal
 
 📌 Sefaz direto
+
+
+integração com XML - NOTA FISCAL 
+
+Atualização de estoque
+
+Atualização de dados
