@@ -11,6 +11,8 @@ class ProdutosMaisVendidosChart extends ChartWidget
 
     protected static ?int $sort = 4;
 
+    protected int|string|array $columnSpan = 'full';
+
     protected function getData(): array
     {
         $topProdutos = ItemVendido::query()

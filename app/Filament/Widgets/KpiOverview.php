@@ -38,10 +38,10 @@ class KpiOverview extends StatsOverviewWidget
                 ->description('Quantidade de vendas finalizadas')
                 ->descriptionIcon('heroicon-m-receipt-percent')
                 ->color('primary'),
-            Stat::make('Ticket médio', 'R$ ' . number_format($ticketMedio, 2, ',', '.'))
-                ->description('Média por venda no mês')
-                ->descriptionIcon('heroicon-m-chart-bar')
-                ->color('warning'),
+            // Stat::make('Ticket médio', 'R$ ' . number_format($ticketMedio, 2, ',', '.'))
+            //     ->description('Média por venda no mês')
+            //     ->descriptionIcon('heroicon-m-chart-bar')
+            //     ->color('warning'),
             Stat::make('Itens vendidos no mês', (string) $itensVendidosMes)
                 ->description('Soma de quantidades vendidas')
                 ->descriptionIcon('heroicon-m-cube')
