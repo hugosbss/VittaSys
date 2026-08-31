@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contato | VittaSys</title>
+    <meta name="description" content="Entre em contato com a equipe VittaSys. Solicite uma demonstracao gratuita do sistema de gestao para farmacias e drogarias.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+    <header class="site-nav">
+        <div class="nav-inner">
+            <a href="index.html" class="brand-main"><b>VittaSys</b><small>Pharma</small></a>
+            <button class="nav-toggle" aria-label="Abrir menu">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
+            </button>
+            <nav class="nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="quem-somos.html">Quem somos</a>
+                <a href="recursos.html">Recursos</a>
+                <a href="contato.html" class="active">Contato</a>
+                <a href="contato.html" class="nav-cta">Solicitar demonstracao</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="container">
+                <span class="tag tag-teal">Contato</span>
+                <h1>Fale com a gente</h1>
+                <p>Quer saber como o VittaSys pode se encaixar na rotina da sua farmacia? Preencha o formulario ou entre em contato diretamente. Retornaremos em breve.</p>
+            </div>
+        </section>
+
+        <section class="section" style="padding-top:0;">
+            <div class="container contact-grid">
+                <div class="contact-side">
+                    <h2>Demonstracao sem compromisso</h2>
+                    <p>Veja o sistema funcionando e descubra como ele se adapta a operacao do seu negocio.</p>
+                    <ul class="contact-points">
+                        <li><span class="dot"></span>Apresentacao personalizada</li>
+                        <li><span class="dot"></span>Implantacao assistida</li>
+                        <li><span class="dot"></span>Suporte dedicado</li>
+                        <li><span class="dot"></span>Plano adaptado ao tamanho do seu negocio</li>
+                    </ul>
+                    <div style="margin-top:32px;padding-top:24px;border-top:1px solid rgba(14,165,164,0.2);">
+                        <p style="font-size:0.8rem;color:var(--slate-600);font-weight:700;margin-bottom:10px;">Informacoes de contato</p>
+                        <p style="font-size:0.85rem;color:var(--slate-600);margin-bottom:6px;">
+                            <strong style="color:var(--ink);">E-mail</strong><br>contato@vittasys.com
+                        </p>
+                        <p style="font-size:0.85rem;color:var(--slate-600);margin-bottom:6px;">
+                            <strong style="color:var(--ink);">Telefone</strong><br>(XX) XXXXX-XXXX
+                        </p>
+                        <p style="font-size:0.85rem;color:var(--slate-600);">
+                            <strong style="color:var(--ink);">Atendimento</strong><br>Seg a Sex, das 8h as 18h
+                        </p>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <form id="site-contato">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nome">Nome *</label>
+                                <input id="nome" name="nome" type="text" required placeholder="Seu nome completo" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">E-mail *</label>
+                                <input id="email" name="email" type="email" required placeholder="voce@email.com" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefone">Telefone (opcional)</label>
+                            <input id="telefone" name="telefone" type="tel" placeholder="(XX) XXXXX-XXXX" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="mensagem">Mensagem *</label>
+                            <textarea id="mensagem" name="mensagem" rows="5" required placeholder="Conte um pouco sobre a sua farmacia e o que voce precisa..." class="form-control"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-dark form-submit">Enviar mensagem</button>
+
+                        <div id="feedback" class="form-feedback">
+                            <span class="feedback-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>
+                            </span>
+                            <div>
+                                <b></b>
+                                <p></p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <a href="index.html" class="brand-main"><b>VittaSys</b><small>Pharma</small></a>
+            <p class="copy">Gestao inteligente para quem vive o balcao.</p>
+            <div class="footer-links">
+                <a href="quem-somos.html">Quem somos</a>
+                <a href="recursos.html">Recursos</a>
+                <a href="contato.html">Contato</a>
+            </div>
+            <p class="rights">VittaSys - Todos os direitos reservados</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/site.js"></script>
+</body>
+</html>

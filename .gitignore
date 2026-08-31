@@ -26,3 +26,6 @@ yarn-error.log
 /.fleet
 /.DS_Store
 Thumbs.db
+
+*.md
+!README.md

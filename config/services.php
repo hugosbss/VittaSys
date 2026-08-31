@@ -39,4 +39,8 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'contato' => [
+        'to_email' => env('CONTATO_TO_EMAIL', 'contato@vittasys.com'),
+    ],
+
 ];

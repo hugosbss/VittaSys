@@ -3,11 +3,16 @@
 use App\Http\Controllers\CaixaController;
 use App\Http\Controllers\Admin\RelatorioVendasController;
 use App\Http\Controllers\Admin\RelatorioListagemController;
+use App\Http\Controllers\Site\ContatoController;
 use App\Http\Controllers\WebAuthController;
 use App\Http\Controllers\WebProdutoController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'pages.home')->name('home');
+
+Route::post('/site/contato', [ContatoController::class, 'store'])
+    ->name('site.contato.submit')
+    ->middleware('throttle:10,1');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [WebAuthController::class, 'showLogin'])->name('login');
